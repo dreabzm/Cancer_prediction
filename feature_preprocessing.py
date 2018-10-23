@@ -7,7 +7,6 @@ Created on Thu Oct  4 16:18:46 2018
 """
 import csv
 import numpy as np
-import random
 
 class preproc:
     def __init__(self, sparse_field, shuffle=True):
@@ -18,15 +17,14 @@ class preproc:
         Xs = sparse_feature_preproc(feature_fields = self.sparse_field)
         label = label_preproc()
         
-        if (self.shuffle == True):
-            random_seed = random.randint(0, 100)
-            random.seed(random_seed)
-            random.shuffle(Xd)
+        if (self.shuffle):
+            state = np.random.get_state()
+            np.random.shuffle(Xd)
             for key in Xs.keys():
-                random.seed(random_seed)
-                random.shuffle(Xs[key])
-            random.seed(random_seed)
-            random.shuffle(label)
+                np.random.set_state(state)
+                np.random.shuffle(Xs[key])
+            np.random.set_state(state)
+            np.random.shuffle(label)
         
         return Xd, Xs, label
 
@@ -74,4 +72,10 @@ def label_preproc(
     
     return Y
 
-dense_feature_preproc()
+aa = preproc(1, True)
+a, b, c = aa.get_data()
+count = 0
+for x in c[:1000]:
+    if (x == 1):
+        count += 1
+print(count)
